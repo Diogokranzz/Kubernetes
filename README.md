@@ -60,8 +60,18 @@ spec:
 Para validar o disparo do alerta, executámos um pod dedicado a gerar carga de CPU:
 
 ```bash
+# Definimos limits/requests para garantir que o Kubernetes reporta o uso corretamente
 kubectl run stress-cpu --image=polinux/stress --requests="cpu=200m,memory=100Mi" --limits="cpu=500m,memory=200Mi" -- -c 1
 ```
+
+### 6. Configuração de Ingress (Acesso via Domínio)
+Para aceder à loja através de um domínio local (`loja.diogo.local`):
+
+1. **Ativar Ingress:** `minikube addons enable ingress`
+2. **Aplicar Regras:** `kubectl apply -f ingress-loja.yaml`
+3. **Iniciar Túnel (Num terminal separado):** `/home/corn/.local/bin/minikube tunnel` (pede senha sudo)
+4. **Configurar Hosts (`/etc/hosts`):** Adicionar `<IP_DO_INGRESS> loja.diogo.local`
+5. **Aceder:** http://loja.diogo.local
 
 ## Evidências
 
