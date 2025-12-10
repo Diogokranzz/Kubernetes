@@ -1,0 +1,27 @@
+name: CI - Verificacao de Qualidade
+
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  
+  lint-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - name:  Download do Código (Checkout)
+        uses: actions/checkout@v4
+
+      - name:  Verificar Sintaxe YAML
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: .
+          config_data: |
+            extends: default
+            rules:
+              line-length: disable
+              document-start: disable
+              truthy: disable
