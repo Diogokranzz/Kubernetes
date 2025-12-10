@@ -1,21 +1,19 @@
 name: CI - Verificacao de Qualidade
 
-
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  
   lint-yaml:
     runs-on: ubuntu-latest
     steps:
-      - name:  Download do Código (Checkout)
+      - name: Download do Código (Checkout)
         uses: actions/checkout@v4
 
-      - name:  Verificar Sintaxe YAML
+      - name: Verificar Sintaxe YAML
         uses: ibiqlik/action-yamllint@v3
         with:
           file_or_dir: .

@@ -6,13 +6,13 @@ metadata:
     app: stress-cpu
 spec:
   containers:
-  - name: stress-cpu
-    image: polinux/stress
-    args: ["-c", "1"]
-    resources:
-      requests:
-        cpu: "200m"
-        memory: "100Mi"
-      limits:
-        cpu: "500m"
-        memory: "200Mi"
+    - name: stress-cpu
+      image: polinux/stress
+      args: ["-c", "1"]
+      resources:
+        requests:
+          cpu: "200m"
+          memory: "100Mi"
+        limits:
+          cpu: "500m"
+          memory: "200Mi"
