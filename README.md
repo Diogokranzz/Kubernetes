@@ -73,6 +73,26 @@ Para aceder à loja através de um domínio local (`loja.diogo.local`):
 4. **Configurar Hosts (`/etc/hosts`):** Adicionar `<IP_DO_INGRESS> loja.diogo.local`
 5. **Aceder:** http://loja.diogo.local
 
+### 7. GitOps com ArgoCD (Single Source of Truth)
+Implementámos o paradigma GitOps usando o ArgoCD. O estado desejado do cluster é definido neste repositório GitHub.
+
+**Instalação:**
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+**Acesso ao Painel:**
+- **URL:** https://argocd.diogo.local
+- **User:** `admin`
+- **Senha:** (Ver secção Comandos Úteis)
+
+**Teste de Auto-Cura (Self-Healing):**
+O ArgoCD garante que o cluster está sempre sincronizado com o Git.
+1. Apague um deployment manualmente: `kubectl delete deployment frontend`
+2. Observe no ArgoCD: Ele deteta a falta do componente ("Out of Sync") e recria-o imediatamente.
+3. Resultado: A loja mantém-se online e resiliente a "acidentes" manuais.
+
 ## Evidências
 
 ### Grafana Explore - Análise de Métricas
@@ -90,4 +110,9 @@ kubectl port-forward svc/stack-monitorizacao-grafana 3000:80 -n monitoring
 **Resgatar a senha de admin do Grafana:**
 ```bash
 kubectl get secret --namespace monitoring stack-monitorizacao-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
+**Resgatar a senha inicial do ArgoCD:**
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 ```
