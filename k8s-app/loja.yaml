@@ -1,948 +1,1880 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: currencyservice
-  labels:
-    app: currencyservice
-spec:
-  selector:
-    matchLabels:
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/currencyservice
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/currencyservice"},"labels":{"app":"currencyservice"},"name":"currencyservice","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"currencyservice"}},"template":{"metadata":{"labels":{"app":"currencyservice"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"7000"},{"name":"DISABLE_PROFILER","value":"1"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.4","livenessProbe":{"grpc":{"port":7000}},"name":"server","ports":[{"containerPort":7000,"name":"grpc"}],"readinessProbe":{"grpc":{"port":7000}},"resources":{"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"currencyservice","terminationGracePeriodSeconds":5}}}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    generation: 2
+    labels:
       app: currencyservice
-  template:
-    metadata:
-      labels:
+    name: currencyservice
+    namespace: default
+    resourceVersion: "42082"
+    uid: a2fbe974-0b9d-4dfd-9205-37c1a1ff0b98
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
         app: currencyservice
-    spec:
-      serviceAccountName: currencyservice
-      terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            privileged: false
-            readOnlyRootFilesystem: true
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: currencyservice
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "7000"
+          - name: DISABLE_PROFILER
+            value: "1"
           image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.4
-          ports:
-            - name: grpc
-              containerPort: 7000
-          env:
-            - name: PORT
-              value: "7000"
-            - name: DISABLE_PROFILER
-              value: "1"
-          readinessProbe:
-            grpc:
-              port: 7000
+          imagePullPolicy: IfNotPresent
           livenessProbe:
+            failureThreshold: 3
             grpc:
               port: 7000
+              service: ""
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
+          ports:
+          - containerPort: 7000
+            name: grpc
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 7000
+              service: ""
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
-            requests:
-              cpu: 100m
-              memory: 64Mi
             limits:
               cpu: 200m
               memory: 128Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: currencyservice
-  labels:
-    app: currencyservice
-spec:
-  type: ClusterIP
-  selector:
-    app: currencyservice
-  ports:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: currencyservice
+        serviceAccountName: currencyservice
+        terminationGracePeriodSeconds: 5
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:14:58Z"
+      lastUpdateTime: "2025-12-09T18:15:34Z"
+      message: ReplicaSet "currencyservice-7df8bcbf94" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-11T00:54:58Z"
+      lastUpdateTime: "2025-12-11T00:54:58Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/currencyservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/currencyservice"},"labels":{"app":"currencyservice"},"name":"currencyservice","namespace":"default"},"spec":{"ports":[{"name":"grpc","port":7000,"targetPort":7000}],"selector":{"app":"currencyservice"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    labels:
+      app: currencyservice
+    name: currencyservice
+    namespace: default
+    resourceVersion: "28463"
+    uid: e4457ccc-0438-40ba-a98e-f8037f189870
+  spec:
+    clusterIP: 10.101.247.96
+    clusterIPs:
+    - 10.101.247.96
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
     - name: grpc
       port: 7000
+      protocol: TCP
       targetPort: 7000
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: currencyservice
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: loadgenerator
-  labels:
-    app: loadgenerator
-spec:
-  selector:
-    matchLabels:
+    selector:
+      app: currencyservice
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/currencyservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/currencyservice"},"name":"currencyservice","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    name: currencyservice
+    namespace: default
+    resourceVersion: "28450"
+    uid: 939897f8-c164-4a7d-bcec-d34acc8f1530
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/loadgenerator
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/loadgenerator"},"labels":{"app":"loadgenerator"},"name":"loadgenerator","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"loadgenerator"}},"template":{"metadata":{"annotations":{"sidecar.istio.io/rewriteAppHTTPProbers":"true"},"labels":{"app":"loadgenerator"}},"spec":{"containers":[{"env":[{"name":"FRONTEND_ADDR","value":"frontend:80"},{"name":"USERS","value":"10"},{"name":"RATE","value":"1"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator:v0.10.4","name":"main","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"300m","memory":"256Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"initContainers":[{"command":["/bin/sh","-exc","MAX_RETRIES=12\nRETRY_INTERVAL=10\nfor i in $(seq 1 $MAX_RETRIES); do\n  echo \"Attempt $i: Pinging frontend: ${FRONTEND_ADDR}...\"\n  STATUSCODE=$(wget --server-response http://${FRONTEND_ADDR} 2\u003e\u00261 | awk '/^  HTTP/{print $2}')\n  if [ $STATUSCODE -eq 200 ]; then\n      echo \"Frontend is reachable.\"\n      exit 0\n  fi\n  echo \"Error: Could not reach frontend - Status code: ${STATUSCODE}\"\n  sleep $RETRY_INTERVAL\ndone\necho \"Failed to reach frontend after $MAX_RETRIES attempts.\"\nexit 1\n"],"env":[{"name":"FRONTEND_ADDR","value":"frontend:80"}],"image":"busybox:latest","name":"frontend-check","securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"restartPolicy":"Always","securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"loadgenerator","terminationGracePeriodSeconds":5}}}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    generation: 2
+    labels:
       app: loadgenerator
-  replicas: 1
-  template:
-    metadata:
-      labels:
+    name: loadgenerator
+    namespace: default
+    resourceVersion: "28478"
+    uid: fd4520ff-1b29-4a0d-b9af-ef0ac03b7b75
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
         app: loadgenerator
-      annotations:
-        sidecar.istio.io/rewriteAppHTTPProbers: "true"
-    spec:
-      serviceAccountName: loadgenerator
-      terminationGracePeriodSeconds: 5
-      restartPolicy: Always
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      initContainers:
-        - command:
-            - /bin/sh
-            - -exc
-            - |
-              MAX_RETRIES=12
-              RETRY_INTERVAL=10
-              for i in $(seq 1 $MAX_RETRIES); do
-                echo "Attempt $i: Pinging frontend: ${FRONTEND_ADDR}..."
-                STATUSCODE=$(wget --server-response http://${FRONTEND_ADDR} 2>&1 | awk '/^  HTTP/{print $2}')
-                if [ $STATUSCODE -eq 200 ]; then
-                    echo "Frontend is reachable."
-                    exit 0
-                fi
-                echo "Error: Could not reach frontend - Status code: ${STATUSCODE}"
-                sleep $RETRY_INTERVAL
-              done
-              echo "Failed to reach frontend after $MAX_RETRIES attempts."
-              exit 1
-          name: frontend-check
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            privileged: false
-            readOnlyRootFilesystem: true
-          image: busybox:latest
-          env:
-            - name: FRONTEND_ADDR
-              value: "frontend:80"
-      containers:
-        - name: main
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            privileged: false
-            readOnlyRootFilesystem: true
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        labels:
+          app: loadgenerator
+      spec:
+        containers:
+        - env:
+          - name: FRONTEND_ADDR
+            value: frontend:80
+          - name: USERS
+            value: "10"
+          - name: RATE
+            value: "1"
           image: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator:v0.10.4
-          env:
-            - name: FRONTEND_ADDR
-              value: "frontend:80"
-            - name: USERS
-              value: "10"
-            - name: RATE
-              value: "1"
+          imagePullPolicy: IfNotPresent
+          name: main
           resources:
-            requests:
-              cpu: 300m
-              memory: 256Mi
             limits:
               cpu: 500m
               memory: 512Mi
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: loadgenerator
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: productcatalogservice
-  labels:
-    app: productcatalogservice
-spec:
-  selector:
-    matchLabels:
-      app: productcatalogservice
-  template:
-    metadata:
-      labels:
-        app: productcatalogservice
-    spec:
-      serviceAccountName: productcatalogservice
-      terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
+            requests:
+              cpu: 300m
+              memory: 256Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
+              - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.4
-          ports:
-            - containerPort: 3550
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        initContainers:
+        - command:
+          - /bin/sh
+          - -exc
+          - |
+            MAX_RETRIES=12
+            RETRY_INTERVAL=10
+            for i in $(seq 1 $MAX_RETRIES); do
+              echo "Attempt $i: Pinging frontend: ${FRONTEND_ADDR}..."
+              STATUSCODE=$(wget --server-response http://${FRONTEND_ADDR} 2>&1 | awk '/^  HTTP/{print $2}')
+              if [ $STATUSCODE -eq 200 ]; then
+                  echo "Frontend is reachable."
+                  exit 0
+              fi
+              echo "Error: Could not reach frontend - Status code: ${STATUSCODE}"
+              sleep $RETRY_INTERVAL
+            done
+            echo "Failed to reach frontend after $MAX_RETRIES attempts."
+            exit 1
           env:
-            - name: PORT
-              value: "3550"
-            - name: DISABLE_PROFILER
-              value: "1"
-          readinessProbe:
-            grpc:
-              port: 3550
+          - name: FRONTEND_ADDR
+            value: frontend:80
+          image: busybox:latest
+          imagePullPolicy: Always
+          name: frontend-check
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: loadgenerator
+        serviceAccountName: loadgenerator
+        terminationGracePeriodSeconds: 5
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:14:58Z"
+      lastUpdateTime: "2025-12-09T18:17:39Z"
+      message: ReplicaSet "loadgenerator-668bb8fcf" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-10T20:17:41Z"
+      lastUpdateTime: "2025-12-10T20:17:41Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/loadgenerator
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/loadgenerator"},"name":"loadgenerator","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    name: loadgenerator
+    namespace: default
+    resourceVersion: "28449"
+    uid: da8f5755-dae8-483a-9d90-7087fae772a2
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/productcatalogservice
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/productcatalogservice"},"labels":{"app":"productcatalogservice"},"name":"productcatalogservice","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"productcatalogservice"}},"template":{"metadata":{"labels":{"app":"productcatalogservice"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"3550"},{"name":"DISABLE_PROFILER","value":"1"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.4","livenessProbe":{"grpc":{"port":3550}},"name":"server","ports":[{"containerPort":3550}],"readinessProbe":{"grpc":{"port":3550}},"resources":{"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"productcatalogservice","terminationGracePeriodSeconds":5}}}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    generation: 2
+    labels:
+      app: productcatalogservice
+    name: productcatalogservice
+    namespace: default
+    resourceVersion: "28510"
+    uid: 185bbbf7-869f-4962-bd21-9d19210fba61
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: productcatalogservice
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: productcatalogservice
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "3550"
+          - name: DISABLE_PROFILER
+            value: "1"
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.4
+          imagePullPolicy: IfNotPresent
           livenessProbe:
+            failureThreshold: 3
             grpc:
               port: 3550
+              service: ""
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
+          ports:
+          - containerPort: 3550
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 3550
+              service: ""
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
-            requests:
-              cpu: 100m
-              memory: 64Mi
             limits:
               cpu: 200m
               memory: 128Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: productcatalogservice
-  labels:
-    app: productcatalogservice
-spec:
-  type: ClusterIP
-  selector:
-    app: productcatalogservice
-  ports:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: productcatalogservice
+        serviceAccountName: productcatalogservice
+        terminationGracePeriodSeconds: 5
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:14:58Z"
+      lastUpdateTime: "2025-12-09T18:15:32Z"
+      message: ReplicaSet "productcatalogservice-8485d7d86d" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-10T20:16:47Z"
+      lastUpdateTime: "2025-12-10T20:16:47Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/productcatalogservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/productcatalogservice"},"labels":{"app":"productcatalogservice"},"name":"productcatalogservice","namespace":"default"},"spec":{"ports":[{"name":"grpc","port":3550,"targetPort":3550}],"selector":{"app":"productcatalogservice"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    labels:
+      app: productcatalogservice
+    name: productcatalogservice
+    namespace: default
+    resourceVersion: "28467"
+    uid: dd64bef8-ac93-44c5-aac5-fb05cc9c6eca
+  spec:
+    clusterIP: 10.109.52.180
+    clusterIPs:
+    - 10.109.52.180
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
     - name: grpc
       port: 3550
+      protocol: TCP
       targetPort: 3550
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: productcatalogservice
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: checkoutservice
-  labels:
-    app: checkoutservice
-spec:
-  selector:
-    matchLabels:
+    selector:
+      app: productcatalogservice
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/productcatalogservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/productcatalogservice"},"name":"productcatalogservice","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    name: productcatalogservice
+    namespace: default
+    resourceVersion: "28455"
+    uid: 3464c11c-769e-4238-9a0d-dd5dca7317c5
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/checkoutservice
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/checkoutservice"},"labels":{"app":"checkoutservice"},"name":"checkoutservice","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"checkoutservice"}},"template":{"metadata":{"labels":{"app":"checkoutservice"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"5050"},{"name":"PRODUCT_CATALOG_SERVICE_ADDR","value":"productcatalogservice:3550"},{"name":"SHIPPING_SERVICE_ADDR","value":"shippingservice:50051"},{"name":"PAYMENT_SERVICE_ADDR","value":"paymentservice:50051"},{"name":"EMAIL_SERVICE_ADDR","value":"emailservice:5000"},{"name":"CURRENCY_SERVICE_ADDR","value":"currencyservice:7000"},{"name":"CART_SERVICE_ADDR","value":"cartservice:7070"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice:v0.10.4","livenessProbe":{"grpc":{"port":5050}},"name":"server","ports":[{"containerPort":5050}],"readinessProbe":{"grpc":{"port":5050}},"resources":{"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"checkoutservice"}}}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    generation: 2
+    labels:
       app: checkoutservice
-  template:
-    metadata:
-      labels:
+    name: checkoutservice
+    namespace: default
+    resourceVersion: "28496"
+    uid: dba123c8-234a-4fac-b793-4b1efd31af3b
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
         app: checkoutservice
-    spec:
-      serviceAccountName: checkoutservice
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: checkoutservice
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "5050"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: productcatalogservice:3550
+          - name: SHIPPING_SERVICE_ADDR
+            value: shippingservice:50051
+          - name: PAYMENT_SERVICE_ADDR
+            value: paymentservice:50051
+          - name: EMAIL_SERVICE_ADDR
+            value: emailservice:5000
+          - name: CURRENCY_SERVICE_ADDR
+            value: currencyservice:7000
+          - name: CART_SERVICE_ADDR
+            value: cartservice:7070
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice:v0.10.4
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 5050
+              service: ""
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
+          ports:
+          - containerPort: 5050
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 5050
+              service: ""
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
+              - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice:v0.10.4
-          ports:
-            - containerPort: 5050
-          readinessProbe:
-            grpc:
-              port: 5050
-          livenessProbe:
-            grpc:
-              port: 5050
-          env:
-            - name: PORT
-              value: "5050"
-            - name: PRODUCT_CATALOG_SERVICE_ADDR
-              value: "productcatalogservice:3550"
-            - name: SHIPPING_SERVICE_ADDR
-              value: "shippingservice:50051"
-            - name: PAYMENT_SERVICE_ADDR
-              value: "paymentservice:50051"
-            - name: EMAIL_SERVICE_ADDR
-              value: "emailservice:5000"
-            - name: CURRENCY_SERVICE_ADDR
-              value: "currencyservice:7000"
-            - name: CART_SERVICE_ADDR
-              value: "cartservice:7070"
-          resources:
-            requests:
-              cpu: 100m
-              memory: 64Mi
-            limits:
-              cpu: 200m
-              memory: 128Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: checkoutservice
-  labels:
-    app: checkoutservice
-spec:
-  type: ClusterIP
-  selector:
-    app: checkoutservice
-  ports:
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: checkoutservice
+        serviceAccountName: checkoutservice
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:14:58Z"
+      lastUpdateTime: "2025-12-09T18:15:42Z"
+      message: ReplicaSet "checkoutservice-57dd9cf79b" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-10T20:16:48Z"
+      lastUpdateTime: "2025-12-10T20:16:48Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/checkoutservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/checkoutservice"},"labels":{"app":"checkoutservice"},"name":"checkoutservice","namespace":"default"},"spec":{"ports":[{"name":"grpc","port":5050,"targetPort":5050}],"selector":{"app":"checkoutservice"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:58Z"
+    labels:
+      app: checkoutservice
+    name: checkoutservice
+    namespace: default
+    resourceVersion: "28468"
+    uid: 8aab2a72-8b1b-4ed5-b5d7-9153a896dbbd
+  spec:
+    clusterIP: 10.107.52.156
+    clusterIPs:
+    - 10.107.52.156
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
     - name: grpc
       port: 5050
+      protocol: TCP
       targetPort: 5050
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: checkoutservice
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: shippingservice
-  labels:
-    app: shippingservice
-spec:
-  selector:
-    matchLabels:
+    selector:
+      app: checkoutservice
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/checkoutservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/checkoutservice"},"name":"checkoutservice","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    name: checkoutservice
+    namespace: default
+    resourceVersion: "28456"
+    uid: cfb73641-8df8-4f95-af36-65c227f57ec1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/shippingservice
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/shippingservice"},"labels":{"app":"shippingservice"},"name":"shippingservice","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"shippingservice"}},"template":{"metadata":{"labels":{"app":"shippingservice"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"50051"},{"name":"DISABLE_PROFILER","value":"1"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice:v0.10.4","livenessProbe":{"grpc":{"port":50051}},"name":"server","ports":[{"containerPort":50051}],"readinessProbe":{"grpc":{"port":50051},"periodSeconds":5},"resources":{"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"shippingservice"}}}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    generation: 2
+    labels:
       app: shippingservice
-  template:
-    metadata:
-      labels:
+    name: shippingservice
+    namespace: default
+    resourceVersion: "28500"
+    uid: 0da3d1cb-faf7-41ca-94cd-99213bd21c31
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
         app: shippingservice
-    spec:
-      serviceAccountName: shippingservice
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            privileged: false
-            readOnlyRootFilesystem: true
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: shippingservice
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "50051"
+          - name: DISABLE_PROFILER
+            value: "1"
           image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice:v0.10.4
-          ports:
-            - containerPort: 50051
-          env:
-            - name: PORT
-              value: "50051"
-            - name: DISABLE_PROFILER
-              value: "1"
-          readinessProbe:
-            periodSeconds: 5
-            grpc:
-              port: 50051
+          imagePullPolicy: IfNotPresent
           livenessProbe:
+            failureThreshold: 3
             grpc:
               port: 50051
+              service: ""
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
+          ports:
+          - containerPort: 50051
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 50051
+              service: ""
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
-            requests:
-              cpu: 100m
-              memory: 64Mi
             limits:
               cpu: 200m
               memory: 128Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: shippingservice
-  labels:
-    app: shippingservice
-spec:
-  type: ClusterIP
-  selector:
-    app: shippingservice
-  ports:
-    - name: grpc
-      port: 50051
-      targetPort: 50051
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: shippingservice
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: cartservice
-  labels:
-    app: cartservice
-spec:
-  selector:
-    matchLabels:
-      app: cartservice
-  template:
-    metadata:
-      labels:
-        app: cartservice
-    spec:
-      serviceAccountName: cartservice
-      terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
+            requests:
+              cpu: 100m
+              memory: 64Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
+              - ALL
             privileged: false
             readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: shippingservice
+        serviceAccountName: shippingservice
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:14:59Z"
+      lastUpdateTime: "2025-12-09T18:15:50Z"
+      message: ReplicaSet "shippingservice-67768cd4c6" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-10T20:16:49Z"
+      lastUpdateTime: "2025-12-10T20:16:49Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/shippingservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/shippingservice"},"labels":{"app":"shippingservice"},"name":"shippingservice","namespace":"default"},"spec":{"ports":[{"name":"grpc","port":50051,"targetPort":50051}],"selector":{"app":"shippingservice"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    labels:
+      app: shippingservice
+    name: shippingservice
+    namespace: default
+    resourceVersion: "28471"
+    uid: 810bfba2-97c9-4e61-87f6-3b37d198b320
+  spec:
+    clusterIP: 10.100.254.66
+    clusterIPs:
+    - 10.100.254.66
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: grpc
+      port: 50051
+      protocol: TCP
+      targetPort: 50051
+    selector:
+      app: shippingservice
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/shippingservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/shippingservice"},"name":"shippingservice","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    name: shippingservice
+    namespace: default
+    resourceVersion: "28454"
+    uid: 151d767e-aa82-4a56-9a73-c575ce8e305d
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/cartservice
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/cartservice"},"labels":{"app":"cartservice"},"name":"cartservice","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"cartservice"}},"template":{"metadata":{"labels":{"app":"cartservice"}},"spec":{"containers":[{"env":[{"name":"REDIS_ADDR","value":"redis-cart:6379"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:v0.10.4","livenessProbe":{"grpc":{"port":7070},"initialDelaySeconds":15,"periodSeconds":10},"name":"server","ports":[{"containerPort":7070}],"readinessProbe":{"grpc":{"port":7070},"initialDelaySeconds":15},"resources":{"limits":{"cpu":"300m","memory":"128Mi"},"requests":{"cpu":"200m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"cartservice","terminationGracePeriodSeconds":5}}}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    generation: 2
+    labels:
+      app: cartservice
+    name: cartservice
+    namespace: default
+    resourceVersion: "28494"
+    uid: 8a79aefa-7d4d-497e-ae8f-5faf067fccd2
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: cartservice
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: cartservice
+      spec:
+        containers:
+        - env:
+          - name: REDIS_ADDR
+            value: redis-cart:6379
           image: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:v0.10.4
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 7070
+              service: ""
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
           ports:
-            - containerPort: 7070
-          env:
-            - name: REDIS_ADDR
-              value: "redis-cart:6379"
+          - containerPort: 7070
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 7070
+              service: ""
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
-            requests:
-              cpu: 200m
-              memory: 64Mi
             limits:
               cpu: 300m
               memory: 128Mi
-          readinessProbe:
-            initialDelaySeconds: 15
-            grpc:
-              port: 7070
-          livenessProbe:
-            initialDelaySeconds: 15
-            periodSeconds: 10
-            grpc:
-              port: 7070
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: cartservice
-  labels:
-    app: cartservice
-spec:
-  type: ClusterIP
-  selector:
-    app: cartservice
-  ports:
-    - name: grpc
-      port: 7070
-      targetPort: 7070
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: cartservice
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: redis-cart
-  labels:
-    app: redis-cart
-spec:
-  selector:
-    matchLabels:
-      app: redis-cart
-  template:
-    metadata:
-      labels:
-        app: redis-cart
-    spec:
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: redis
+            requests:
+              cpu: 200m
+              memory: 64Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
+              - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: redis:alpine
-          ports:
-            - containerPort: 6379
-          readinessProbe:
-            periodSeconds: 5
-            tcpSocket:
-              port: 6379
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: cartservice
+        serviceAccountName: cartservice
+        terminationGracePeriodSeconds: 5
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:14:59Z"
+      lastUpdateTime: "2025-12-09T18:16:23Z"
+      message: ReplicaSet "cartservice-574cf68969" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-10T20:17:11Z"
+      lastUpdateTime: "2025-12-10T20:17:11Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/cartservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/cartservice"},"labels":{"app":"cartservice"},"name":"cartservice","namespace":"default"},"spec":{"ports":[{"name":"grpc","port":7070,"targetPort":7070}],"selector":{"app":"cartservice"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    labels:
+      app: cartservice
+    name: cartservice
+    namespace: default
+    resourceVersion: "28461"
+    uid: eecb4e11-0376-4d88-a89c-5a2a536d4b2a
+  spec:
+    clusterIP: 10.97.213.96
+    clusterIPs:
+    - 10.97.213.96
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: grpc
+      port: 7070
+      protocol: TCP
+      targetPort: 7070
+    selector:
+      app: cartservice
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/cartservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/cartservice"},"name":"cartservice","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    name: cartservice
+    namespace: default
+    resourceVersion: "28448"
+    uid: a8dc3075-6210-4fdb-ae51-91843dbe3ca9
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/redis-cart
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/redis-cart"},"labels":{"app":"redis-cart"},"name":"redis-cart","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"redis-cart"}},"template":{"metadata":{"labels":{"app":"redis-cart"}},"spec":{"containers":[{"image":"redis:alpine","livenessProbe":{"periodSeconds":5,"tcpSocket":{"port":6379}},"name":"redis","ports":[{"containerPort":6379}],"readinessProbe":{"periodSeconds":5,"tcpSocket":{"port":6379}},"resources":{"limits":{"cpu":"125m","memory":"256Mi"},"requests":{"cpu":"70m","memory":"200Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/data","name":"redis-data"}]}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"volumes":[{"emptyDir":{},"name":"redis-data"}]}}}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    generation: 2
+    labels:
+      app: redis-cart
+    name: redis-cart
+    namespace: default
+    resourceVersion: "28499"
+    uid: 08c89c69-c8c1-4df1-97bc-e4c02a9000db
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: redis-cart
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: redis-cart
+      spec:
+        containers:
+        - image: redis:alpine
+          imagePullPolicy: IfNotPresent
           livenessProbe:
+            failureThreshold: 3
             periodSeconds: 5
+            successThreshold: 1
             tcpSocket:
               port: 6379
-          volumeMounts:
-            - mountPath: /data
-              name: redis-data
+            timeoutSeconds: 1
+          name: redis
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 5
+            successThreshold: 1
+            tcpSocket:
+              port: 6379
+            timeoutSeconds: 1
           resources:
             limits:
-              memory: 256Mi
               cpu: 125m
+              memory: 256Mi
             requests:
               cpu: 70m
               memory: 200Mi
-      volumes:
-        - name: redis-data
-          emptyDir: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: redis-cart
-  labels:
-    app: redis-cart
-spec:
-  type: ClusterIP
-  selector:
-    app: redis-cart
-  ports:
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /data
+            name: redis-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: redis-data
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:14:59Z"
+      lastUpdateTime: "2025-12-09T18:16:42Z"
+      message: ReplicaSet "redis-cart-c8ff86559" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-10T20:16:47Z"
+      lastUpdateTime: "2025-12-10T20:16:47Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/redis-cart
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/redis-cart"},"labels":{"app":"redis-cart"},"name":"redis-cart","namespace":"default"},"spec":{"ports":[{"name":"tcp-redis","port":6379,"targetPort":6379}],"selector":{"app":"redis-cart"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    labels:
+      app: redis-cart
+    name: redis-cart
+    namespace: default
+    resourceVersion: "28469"
+    uid: 09653a6e-23bc-43e3-8f0a-1d15cb0f3c75
+  spec:
+    clusterIP: 10.106.104.89
+    clusterIPs:
+    - 10.106.104.89
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
     - name: tcp-redis
       port: 6379
+      protocol: TCP
       targetPort: 6379
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: emailservice
-  labels:
-    app: emailservice
-spec:
-  selector:
-    matchLabels:
+    selector:
+      app: redis-cart
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/emailservice
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/emailservice"},"labels":{"app":"emailservice"},"name":"emailservice","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"emailservice"}},"template":{"metadata":{"labels":{"app":"emailservice"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"8080"},{"name":"DISABLE_PROFILER","value":"1"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.4","livenessProbe":{"grpc":{"port":8080},"periodSeconds":5},"name":"server","ports":[{"containerPort":8080}],"readinessProbe":{"grpc":{"port":8080},"periodSeconds":5},"resources":{"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"emailservice","terminationGracePeriodSeconds":5}}}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    generation: 2
+    labels:
       app: emailservice
-  template:
-    metadata:
-      labels:
+    name: emailservice
+    namespace: default
+    resourceVersion: "28512"
+    uid: e3da7278-c4b5-4892-8255-a08c6881d605
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
         app: emailservice
-    spec:
-      serviceAccountName: emailservice
-      terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: emailservice
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "8080"
+          - name: DISABLE_PROFILER
+            value: "1"
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.4
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 8080
+              service: ""
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 8080
+              service: ""
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
+              - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.4
-          ports:
-            - containerPort: 8080
-          env:
-            - name: PORT
-              value: "8080"
-            - name: DISABLE_PROFILER
-              value: "1"
-          readinessProbe:
-            periodSeconds: 5
-            grpc:
-              port: 8080
-          livenessProbe:
-            periodSeconds: 5
-            grpc:
-              port: 8080
-          resources:
-            requests:
-              cpu: 100m
-              memory: 64Mi
-            limits:
-              cpu: 200m
-              memory: 128Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: emailservice
-  labels:
-    app: emailservice
-spec:
-  type: ClusterIP
-  selector:
-    app: emailservice
-  ports:
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: emailservice
+        serviceAccountName: emailservice
+        terminationGracePeriodSeconds: 5
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:14:59Z"
+      lastUpdateTime: "2025-12-09T18:16:41Z"
+      message: ReplicaSet "emailservice-75c448cdc6" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-10T20:16:57Z"
+      lastUpdateTime: "2025-12-10T20:16:57Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/emailservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/emailservice"},"labels":{"app":"emailservice"},"name":"emailservice","namespace":"default"},"spec":{"ports":[{"name":"grpc","port":5000,"targetPort":8080}],"selector":{"app":"emailservice"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    labels:
+      app: emailservice
+    name: emailservice
+    namespace: default
+    resourceVersion: "28465"
+    uid: 16eaba73-f429-4bb8-94bd-7c3aa32c848a
+  spec:
+    clusterIP: 10.108.114.151
+    clusterIPs:
+    - 10.108.114.151
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
     - name: grpc
       port: 5000
+      protocol: TCP
       targetPort: 8080
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: emailservice
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: paymentservice
-  labels:
-    app: paymentservice
-spec:
-  selector:
-    matchLabels:
+    selector:
+      app: emailservice
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/emailservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/emailservice"},"name":"emailservice","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    name: emailservice
+    namespace: default
+    resourceVersion: "28453"
+    uid: 5dceb3f2-50e5-40c5-b6de-36f42ccc5c90
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/paymentservice
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/paymentservice"},"labels":{"app":"paymentservice"},"name":"paymentservice","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"paymentservice"}},"template":{"metadata":{"labels":{"app":"paymentservice"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"50051"},{"name":"DISABLE_PROFILER","value":"1"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:v0.10.4","livenessProbe":{"grpc":{"port":50051}},"name":"server","ports":[{"containerPort":50051}],"readinessProbe":{"grpc":{"port":50051}},"resources":{"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"paymentservice","terminationGracePeriodSeconds":5}}}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    generation: 2
+    labels:
       app: paymentservice
-  template:
-    metadata:
-      labels:
+    name: paymentservice
+    namespace: default
+    resourceVersion: "43268"
+    uid: bf82c859-ae06-4ff8-a81c-a1750143a577
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
         app: paymentservice
-    spec:
-      serviceAccountName: paymentservice
-      terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: paymentservice
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "50051"
+          - name: DISABLE_PROFILER
+            value: "1"
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:v0.10.4
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 50051
+              service: ""
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
+          ports:
+          - containerPort: 50051
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 50051
+              service: ""
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
+              - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:v0.10.4
-          ports:
-            - containerPort: 50051
-          env:
-            - name: PORT
-              value: "50051"
-            - name: DISABLE_PROFILER
-              value: "1"
-          readinessProbe:
-            grpc:
-              port: 50051
-          livenessProbe:
-            grpc:
-              port: 50051
-          resources:
-            requests:
-              cpu: 100m
-              memory: 64Mi
-            limits:
-              cpu: 200m
-              memory: 128Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: paymentservice
-  labels:
-    app: paymentservice
-spec:
-  type: ClusterIP
-  selector:
-    app: paymentservice
-  ports:
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: paymentservice
+        serviceAccountName: paymentservice
+        terminationGracePeriodSeconds: 5
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:14:59Z"
+      lastUpdateTime: "2025-12-09T18:16:29Z"
+      message: ReplicaSet "paymentservice-549dc89756" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-11T01:15:18Z"
+      lastUpdateTime: "2025-12-11T01:15:18Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/paymentservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/paymentservice"},"labels":{"app":"paymentservice"},"name":"paymentservice","namespace":"default"},"spec":{"ports":[{"name":"grpc","port":50051,"targetPort":50051}],"selector":{"app":"paymentservice"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    labels:
+      app: paymentservice
+    name: paymentservice
+    namespace: default
+    resourceVersion: "28462"
+    uid: 9be57f4e-d327-492d-9a45-a14729e56a3e
+  spec:
+    clusterIP: 10.99.10.16
+    clusterIPs:
+    - 10.99.10.16
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
     - name: grpc
       port: 50051
+      protocol: TCP
       targetPort: 50051
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: paymentservice
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: frontend
-  labels:
-    app: frontend
-spec:
-  selector:
-    matchLabels:
+    selector:
+      app: paymentservice
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/paymentservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/paymentservice"},"name":"paymentservice","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    name: paymentservice
+    namespace: default
+    resourceVersion: "28457"
+    uid: c9ae3347-1f6c-47f8-a748-a2f554575d10
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/frontend
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/frontend"},"labels":{"app":"frontend"},"name":"frontend","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"frontend"}},"template":{"metadata":{"annotations":{"sidecar.istio.io/rewriteAppHTTPProbers":"true"},"labels":{"app":"frontend"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"8080"},{"name":"PRODUCT_CATALOG_SERVICE_ADDR","value":"productcatalogservice:3550"},{"name":"CURRENCY_SERVICE_ADDR","value":"currencyservice:7000"},{"name":"CART_SERVICE_ADDR","value":"cartservice:7070"},{"name":"RECOMMENDATION_SERVICE_ADDR","value":"recommendationservice:8080"},{"name":"SHIPPING_SERVICE_ADDR","value":"shippingservice:50051"},{"name":"CHECKOUT_SERVICE_ADDR","value":"checkoutservice:5050"},{"name":"AD_SERVICE_ADDR","value":"adservice:9555"},{"name":"SHOPPING_ASSISTANT_SERVICE_ADDR","value":"shoppingassistantservice:80"},{"name":"ENABLE_PROFILER","value":"0"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.4","livenessProbe":{"httpGet":{"httpHeaders":[{"name":"Cookie","value":"shop_session-id=x-liveness-probe"}],"path":"/_healthz","port":8080},"initialDelaySeconds":10},"name":"server","ports":[{"containerPort":8080}],"readinessProbe":{"httpGet":{"httpHeaders":[{"name":"Cookie","value":"shop_session-id=x-readiness-probe"}],"path":"/_healthz","port":8080},"initialDelaySeconds":10},"resources":{"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"64Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"frontend"}}}}
+    creationTimestamp: "2025-12-11T03:33:37Z"
+    generation: 1
+    labels:
       app: frontend
-  template:
-    metadata:
-      labels:
+    name: frontend
+    namespace: default
+    resourceVersion: "51231"
+    uid: fdda092c-ddca-40d4-9870-5eb39b154140
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
         app: frontend
-      annotations:
-        sidecar.istio.io/rewriteAppHTTPProbers: "true"
-    spec:
-      serviceAccountName: frontend
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            privileged: false
-            readOnlyRootFilesystem: true
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        labels:
+          app: frontend
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "8080"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: productcatalogservice:3550
+          - name: CURRENCY_SERVICE_ADDR
+            value: currencyservice:7000
+          - name: CART_SERVICE_ADDR
+            value: cartservice:7070
+          - name: RECOMMENDATION_SERVICE_ADDR
+            value: recommendationservice:8080
+          - name: SHIPPING_SERVICE_ADDR
+            value: shippingservice:50051
+          - name: CHECKOUT_SERVICE_ADDR
+            value: checkoutservice:5050
+          - name: AD_SERVICE_ADDR
+            value: adservice:9555
+          - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+            value: shoppingassistantservice:80
+          - name: ENABLE_PROFILER
+            value: "0"
           image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.4
-          ports:
-            - containerPort: 8080
-          readinessProbe:
-            initialDelaySeconds: 10
-            httpGet:
-              path: "/_healthz"
-              port: 8080
-              httpHeaders:
-                - name: "Cookie"
-                  value: "shop_session-id=x-readiness-probe"
+          imagePullPolicy: IfNotPresent
           livenessProbe:
-            initialDelaySeconds: 10
+            failureThreshold: 3
             httpGet:
-              path: "/_healthz"
-              port: 8080
               httpHeaders:
-                - name: "Cookie"
-                  value: "shop_session-id=x-liveness-probe"
-          env:
-            - name: PORT
-              value: "8080"
-            - name: PRODUCT_CATALOG_SERVICE_ADDR
-              value: "productcatalogservice:3550"
-            - name: CURRENCY_SERVICE_ADDR
-              value: "currencyservice:7000"
-            - name: CART_SERVICE_ADDR
-              value: "cartservice:7070"
-            - name: RECOMMENDATION_SERVICE_ADDR
-              value: "recommendationservice:8080"
-            - name: SHIPPING_SERVICE_ADDR
-              value: "shippingservice:50051"
-            - name: CHECKOUT_SERVICE_ADDR
-              value: "checkoutservice:5050"
-            - name: AD_SERVICE_ADDR
-              value: "adservice:9555"
-            - name: SHOPPING_ASSISTANT_SERVICE_ADDR
-              value: "shoppingassistantservice:80"
-
-            - name: ENABLE_PROFILER
-              value: "0"
-
+              - name: Cookie
+                value: shop_session-id=x-liveness-probe
+              path: /_healthz
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              httpHeaders:
+              - name: Cookie
+                value: shop_session-id=x-readiness-probe
+              path: /_healthz
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
-            requests:
-              cpu: 100m
-              memory: 64Mi
             limits:
               cpu: 200m
               memory: 128Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend
-  labels:
-    app: frontend
-spec:
-  type: ClusterIP
-  selector:
-    app: frontend
-  ports:
-    - name: http
-      port: 80
-      targetPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend-external
-  labels:
-    app: frontend
-spec:
-  type: LoadBalancer
-  selector:
-    app: frontend
-  ports:
-    - name: http
-      port: 80
-      targetPort: 8080
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: frontend
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: recommendationservice
-  labels:
-    app: recommendationservice
-spec:
-  selector:
-    matchLabels:
-      app: recommendationservice
-  template:
-    metadata:
-      labels:
-        app: recommendationservice
-    spec:
-      serviceAccountName: recommendationservice
-      terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
+            requests:
+              cpu: 100m
+              memory: 64Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
+              - ALL
             privileged: false
             readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: frontend
+        serviceAccountName: frontend
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-11T03:33:50Z"
+      lastUpdateTime: "2025-12-11T03:33:50Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-12-11T03:33:37Z"
+      lastUpdateTime: "2025-12-11T03:33:50Z"
+      message: ReplicaSet "frontend-75d897db69" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/frontend
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/frontend"},"labels":{"app":"frontend"},"name":"frontend","namespace":"default"},"spec":{"ports":[{"name":"http","port":80,"targetPort":8080}],"selector":{"app":"frontend"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    labels:
+      app: frontend
+    name: frontend
+    namespace: default
+    resourceVersion: "28460"
+    uid: 70af50d7-6039-4793-8d5f-2f524cb89178
+  spec:
+    clusterIP: 10.108.242.78
+    clusterIPs:
+    - 10.108.242.78
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: frontend
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/frontend-external
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/frontend-external"},"labels":{"app":"frontend"},"name":"frontend-external","namespace":"default"},"spec":{"ports":[{"name":"http","port":80,"targetPort":8080}],"selector":{"app":"frontend"},"type":"LoadBalancer"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    labels:
+      app: frontend
+    name: frontend-external
+    namespace: default
+    resourceVersion: "28466"
+    uid: d0ca2025-b20e-4949-bfae-42d38ed017a1
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 10.109.67.114
+    clusterIPs:
+    - 10.109.67.114
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      nodePort: 31593
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: frontend
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 10.109.67.114
+        ipMode: VIP
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/frontend
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/frontend"},"name":"frontend","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    name: frontend
+    namespace: default
+    resourceVersion: "28452"
+    uid: d1abfe7f-6f69-4d2b-ad96-a85108c0d5b1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/recommendationservice
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/recommendationservice"},"labels":{"app":"recommendationservice"},"name":"recommendationservice","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"recommendationservice"}},"template":{"metadata":{"labels":{"app":"recommendationservice"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"8080"},{"name":"PRODUCT_CATALOG_SERVICE_ADDR","value":"productcatalogservice:3550"},{"name":"DISABLE_PROFILER","value":"1"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.4","livenessProbe":{"grpc":{"port":8080},"periodSeconds":5},"name":"server","ports":[{"containerPort":8080}],"readinessProbe":{"grpc":{"port":8080},"periodSeconds":5},"resources":{"limits":{"cpu":"200m","memory":"450Mi"},"requests":{"cpu":"100m","memory":"220Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"recommendationservice","terminationGracePeriodSeconds":5}}}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    generation: 2
+    labels:
+      app: recommendationservice
+    name: recommendationservice
+    namespace: default
+    resourceVersion: "28498"
+    uid: 16c866af-006c-4a81-85f4-99c0a6b6a401
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: recommendationservice
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: recommendationservice
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "8080"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: productcatalogservice:3550
+          - name: DISABLE_PROFILER
+            value: "1"
           image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.4
-          ports:
-            - containerPort: 8080
-          readinessProbe:
-            periodSeconds: 5
-            grpc:
-              port: 8080
+          imagePullPolicy: IfNotPresent
           livenessProbe:
-            periodSeconds: 5
+            failureThreshold: 3
             grpc:
               port: 8080
-          env:
-            - name: PORT
-              value: "8080"
-            - name: PRODUCT_CATALOG_SERVICE_ADDR
-              value: "productcatalogservice:3550"
-            - name: DISABLE_PROFILER
-              value: "1"
+              service: ""
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 8080
+              service: ""
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
-            requests:
-              cpu: 100m
-              memory: 220Mi
             limits:
               cpu: 200m
               memory: 450Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: recommendationservice
-  labels:
-    app: recommendationservice
-spec:
-  type: ClusterIP
-  selector:
-    app: recommendationservice
-  ports:
-    - name: grpc
-      port: 8080
-      targetPort: 8080
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: recommendationservice
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: adservice
-  labels:
-    app: adservice
-spec:
-  selector:
-    matchLabels:
-      app: adservice
-  template:
-    metadata:
-      labels:
-        app: adservice
-    spec:
-      serviceAccountName: adservice
-      terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-        - name: server
+            requests:
+              cpu: 100m
+              memory: 220Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
+              - ALL
             privileged: false
             readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: recommendationservice
+        serviceAccountName: recommendationservice
+        terminationGracePeriodSeconds: 5
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:15:00Z"
+      lastUpdateTime: "2025-12-09T18:17:13Z"
+      message: ReplicaSet "recommendationservice-88dc45984" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-10T20:16:56Z"
+      lastUpdateTime: "2025-12-10T20:16:56Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/recommendationservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/recommendationservice"},"labels":{"app":"recommendationservice"},"name":"recommendationservice","namespace":"default"},"spec":{"ports":[{"name":"grpc","port":8080,"targetPort":8080}],"selector":{"app":"recommendationservice"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    labels:
+      app: recommendationservice
+    name: recommendationservice
+    namespace: default
+    resourceVersion: "28464"
+    uid: 7eae5409-c2c1-480f-9818-dcf814bc1a12
+  spec:
+    clusterIP: 10.111.15.86
+    clusterIPs:
+    - 10.111.15.86
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: grpc
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: recommendationservice
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/recommendationservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/recommendationservice"},"name":"recommendationservice","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    name: recommendationservice
+    namespace: default
+    resourceVersion: "28451"
+    uid: 02a52247-512c-4f09-ba4d-7d82ed7ea071
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:apps/Deployment:default/adservice
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:apps/Deployment:default/adservice"},"labels":{"app":"adservice"},"name":"adservice","namespace":"default"},"spec":{"selector":{"matchLabels":{"app":"adservice"}},"template":{"metadata":{"labels":{"app":"adservice"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"9555"}],"image":"us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.4","livenessProbe":{"grpc":{"port":9555},"initialDelaySeconds":20,"periodSeconds":15},"name":"server","ports":[{"containerPort":9555}],"readinessProbe":{"grpc":{"port":9555},"initialDelaySeconds":20,"periodSeconds":15},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"200m","memory":"180Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true}}],"securityContext":{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000},"serviceAccountName":"adservice","terminationGracePeriodSeconds":5}}}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    generation: 2
+    labels:
+      app: adservice
+    name: adservice
+    namespace: default
+    resourceVersion: "28497"
+    uid: b386ed85-9fc3-4b6d-b91c-0ea9011de19b
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: adservice
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: adservice
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "9555"
           image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.4
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 9555
+              service: ""
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: server
           ports:
-            - containerPort: 9555
-          env:
-            - name: PORT
-              value: "9555"
+          - containerPort: 9555
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            grpc:
+              port: 9555
+              service: ""
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
-            requests:
-              cpu: 200m
-              memory: 180Mi
             limits:
               cpu: 300m
               memory: 300Mi
-          readinessProbe:
-            initialDelaySeconds: 20
-            periodSeconds: 15
-            grpc:
-              port: 9555
-          livenessProbe:
-            initialDelaySeconds: 20
-            periodSeconds: 15
-            grpc:
-              port: 9555
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: adservice
-  labels:
-    app: adservice
-spec:
-  type: ClusterIP
-  selector:
-    app: adservice
-  ports:
+            requests:
+              cpu: 200m
+              memory: 180Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        serviceAccount: adservice
+        serviceAccountName: adservice
+        terminationGracePeriodSeconds: 5
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-12-09T18:15:00Z"
+      lastUpdateTime: "2025-12-09T18:17:53Z"
+      message: ReplicaSet "adservice-76b9bdbf58" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-10T20:17:07Z"
+      lastUpdateTime: "2025-12-10T20:17:07Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/Service:default/adservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/Service:default/adservice"},"labels":{"app":"adservice"},"name":"adservice","namespace":"default"},"spec":{"ports":[{"name":"grpc","port":9555,"targetPort":9555}],"selector":{"app":"adservice"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    labels:
+      app: adservice
+    name: adservice
+    namespace: default
+    resourceVersion: "28470"
+    uid: 204e1b2d-f6ac-4702-815d-8f231f4588ca
+  spec:
+    clusterIP: 10.111.28.138
+    clusterIPs:
+    - 10.111.28.138
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
     - name: grpc
       port: 9555
+      protocol: TCP
       targetPort: 9555
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: adservice
+    selector:
+      app: adservice
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      argocd.argoproj.io/tracking-id: loja-online:/ServiceAccount:default/adservice
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loja-online:/ServiceAccount:default/adservice"},"name":"adservice","namespace":"default"}}
+    creationTimestamp: "2025-12-09T18:14:59Z"
+    name: adservice
+    namespace: default
+    resourceVersion: "28458"
+    uid: 9bd4430d-04a2-4165-874a-f35162a1b31b
+kind: List
+metadata: {}
