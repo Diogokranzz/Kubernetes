@@ -748,10 +748,10 @@ spec:
               value: "adservice:9555"
             - name: SHOPPING_ASSISTANT_SERVICE_ADDR
               value: "shoppingassistantservice:80"
-                
+
             - name: ENABLE_PROFILER
               value: "0"
-              
+
           resources:
             requests:
               cpu: 100m
