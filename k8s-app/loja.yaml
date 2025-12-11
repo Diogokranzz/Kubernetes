@@ -100,8 +100,8 @@ spec:
         runAsUser: 1000
       initContainers:
         - command:
-          - /bin/sh
-          - -exc
+            - /bin/sh
+            - -exc
           - |
             MAX_RETRIES=12
             RETRY_INTERVAL=10
@@ -129,8 +129,8 @@ spec:
           env:
             - name: FRONTEND_ADDR
               value: "frontend:80"
-              containers:
-            - name: main
+      containers:
+        - name: main
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -503,7 +503,7 @@ spec:
               port: 6379
           volumeMounts:
             - mountPath: /data
-          name: redis-data
+              name: redis-data
           resources:
             limits:
               memory: 256Mi
@@ -511,9 +511,9 @@ spec:
             requests:
               cpu: 70m
               memory: 200Mi
-    volumes:
+      volumes:
         - name: redis-data
-            emptyDir: {}
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
