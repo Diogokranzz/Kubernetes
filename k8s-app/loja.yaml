@@ -32,12 +32,12 @@ spec:
           image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.4
           ports:
             - name: grpc
-                  containerPort: 7000
+              containerPort: 7000
           env:
             - name: PORT
-                    value: "7000"
+              value: "7000"
             - name: DISABLE_PROFILER
-                    value: "1"
+              value: "1"
           readinessProbe:
             grpc:
               port: 7000
@@ -128,8 +128,8 @@ spec:
           image: busybox:latest
           env:
             - name: FRONTEND_ADDR
-                  value: "frontend:80"
-            containers:
+              value: "frontend:80"
+              containers:
             - name: main
           securityContext:
             allowPrivilegeEscalation: false
@@ -141,11 +141,11 @@ spec:
           image: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator:v0.10.4
           env:
             - name: FRONTEND_ADDR
-                    value: "frontend:80"
+              value: "frontend:80"
             - name: USERS
-                    value: "10"
+              value: "10"
             - name: RATE
-                    value: "1"
+              value: "1"
           resources:
             requests:
               cpu: 300m
@@ -195,9 +195,9 @@ spec:
             - containerPort: 3550
           env:
             - name: PORT
-                    value: "3550"
+              value: "3550"
             - name: DISABLE_PROFILER
-                    value: "1"
+              value: "1"
           readinessProbe:
             grpc:
               port: 3550
@@ -273,19 +273,19 @@ spec:
               port: 5050
           env:
             - name: PORT
-                    value: "5050"
+              value: "5050"
             - name: PRODUCT_CATALOG_SERVICE_ADDR
-                    value: "productcatalogservice:3550"
+              value: "productcatalogservice:3550"
             - name: SHIPPING_SERVICE_ADDR
-                    value: "shippingservice:50051"
+              value: "shippingservice:50051"
             - name: PAYMENT_SERVICE_ADDR
-                    value: "paymentservice:50051"
+              value: "paymentservice:50051"
             - name: EMAIL_SERVICE_ADDR
-                    value: "emailservice:5000"
+              value: "emailservice:5000"
             - name: CURRENCY_SERVICE_ADDR
-                    value: "currencyservice:7000"
+              value: "currencyservice:7000"
             - name: CART_SERVICE_ADDR
-                    value: "cartservice:7070"
+              value: "cartservice:7070"
           resources:
             requests:
               cpu: 100m
@@ -349,9 +349,9 @@ spec:
             - containerPort: 50051
           env:
             - name: PORT
-                    value: "50051"
+              value: "50051"
             - name: DISABLE_PROFILER
-                    value: "1"
+              value: "1"
           readinessProbe:
             periodSeconds: 5
             grpc:
@@ -423,7 +423,7 @@ spec:
             - containerPort: 7070
           env:
             - name: REDIS_ADDR
-                    value: "redis-cart:6379"
+              value: "redis-cart:6379"
           resources:
             requests:
               cpu: 200m
@@ -566,9 +566,9 @@ spec:
             - containerPort: 8080
           env:
             - name: PORT
-                    value: "8080"
+              value: "8080"
             - name: DISABLE_PROFILER
-                    value: "1"
+              value: "1"
           readinessProbe:
             periodSeconds: 5
             grpc:
@@ -641,9 +641,9 @@ spec:
             - containerPort: 50051
           env:
             - name: PORT
-                    value: "50051"
+              value: "50051"
             - name: DISABLE_PROFILER
-                    value: "1"
+              value: "1"
           readinessProbe:
             grpc:
               port: 50051
@@ -731,29 +731,29 @@ spec:
                     value: "shop_session-id=x-liveness-probe"
           env:
             - name: PORT
-                    value: "8080"
+              value: "8080"
             - name: PRODUCT_CATALOG_SERVICE_ADDR
-                    value: "productcatalogservice:3550"
+              value: "productcatalogservice:3550"
             - name: CURRENCY_SERVICE_ADDR
-                    value: "currencyservice:7000"
+              value: "currencyservice:7000"
             - name: CART_SERVICE_ADDR
-                    value: "cartservice:7070"
+              value: "cartservice:7070"
             - name: RECOMMENDATION_SERVICE_ADDR
-                    value: "recommendationservice:8080"
+              value: "recommendationservice:8080"
             - name: SHIPPING_SERVICE_ADDR
-                    value: "shippingservice:50051"
+              value: "shippingservice:50051"
             - name: CHECKOUT_SERVICE_ADDR
-                    value: "checkoutservice:5050"
+              value: "checkoutservice:5050"
             - name: AD_SERVICE_ADDR
-                    value: "adservice:9555"
+              value: "adservice:9555"
             - name: SHOPPING_ASSISTANT_SERVICE_ADDR
-                    value: "shoppingassistantservice:80"
+              value: "shoppingassistantservice:80"
                   # # ENV_PLATFORM: One of: local, gcp, aws, azure, onprem, alibaba
                   # # When not set, defaults to "local" unless running in GKE, otherwies auto-sets to gcp
                   # - name: ENV_PLATFORM
                   #   value: "aws"
             - name: ENABLE_PROFILER
-                    value: "0"
+              value: "0"
                   # - name: CYMBAL_BRANDING
                   #   value: "true"
                   # - name: ENABLE_ASSISTANT
@@ -850,11 +850,11 @@ spec:
               port: 8080
           env:
             - name: PORT
-                    value: "8080"
+              value: "8080"
             - name: PRODUCT_CATALOG_SERVICE_ADDR
-                    value: "productcatalogservice:3550"
+              value: "productcatalogservice:3550"
             - name: DISABLE_PROFILER
-                    value: "1"
+              value: "1"
           resources:
             requests:
               cpu: 100m
@@ -919,7 +919,7 @@ spec:
             - containerPort: 9555
           env:
             - name: PORT
-                    value: "9555"
+              value: "9555"
           resources:
             requests:
               cpu: 200m
